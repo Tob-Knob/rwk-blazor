@@ -1,0 +1,29 @@
+﻿@page "/values"
+@using Microsoft.AspNetCore.Authorization
+@rendermode InteractiveWebAssembly
+@attribute [Authorize]
+
+<h3>Values</h3>
+
+@if (_values == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var value in _values)
+            {
+                <tr>
+                    <td>@value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

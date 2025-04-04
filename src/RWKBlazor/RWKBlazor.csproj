@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -6,10 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-RWKBlazor-e50e1308-9325-49ec-a426-a2b3638b3595</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Update="Data\app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
-  </ItemGroup>
+	
+	<PropertyGroup>
+		<OpenApiDocumentsDirectory>openapi</OpenApiDocumentsDirectory>
+	</PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RWKBlazor.Client\RWKBlazor.Client.csproj" />
@@ -18,8 +18,21 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="9.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NSwag.MSBuild" Version="14.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
+
+	<Target Name="NSwag" AfterTargets="GenerateOpenApiDocuments" Condition=" '$(NO_RECURSE)' != 'true' ">
+		<Exec Command="$(NSwagExe) openapi2csclient /input:openapi/RWKBlazor.json /output:../RWKBlazor.Sdk/RWKBlazorSdk.cs /namespace:RWKBlazor.Sdk /ClassName:RWKBlazorClient /UseBaseUrl:false /JsonLibrary:SystemTextJson" />
+	</Target>
 
 </Project>

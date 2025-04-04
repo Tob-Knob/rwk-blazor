@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using RWKBlazor.Client.Services;
+using RWKBlazor.Sdk;
+using RWKBlazor.Shared.Services;
 
 namespace RWKBlazor.Client;
 
@@ -13,6 +16,12 @@ class Program
         builder.Services.AddAuthenticationStateDeserialization();
 
         ClientServices.ConfigureServices(builder.Services);
+
+        builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+        builder.Services.AddSingleton(sp => new RWKBlazorClient(sp.GetRequiredService<HttpClient>()));
+
+        builder.Services.AddSingleton<IValueService, ValueService>();
 
         await builder.Build().RunAsync();
     }

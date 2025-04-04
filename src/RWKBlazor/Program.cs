@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using RWKBlazor.Components;
 using RWKBlazor.Components.Account;
 using RWKBlazor.Data;
+using RWKBlazor.Services;
+using RWKBlazor.Shared.Services;
 
 namespace RWKBlazor;
 
@@ -18,6 +20,10 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveWebAssemblyComponents()
             .AddAuthenticationStateSerialization();
+
+        builder.Services.AddControllers();
+        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+        builder.Services.AddOpenApi();
 
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<IdentityUserAccessor>();
@@ -43,6 +49,8 @@ public class Program
 
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+        builder.Services.AddSingleton<IValueService, ValueService>();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -50,6 +58,8 @@ public class Program
         {
             app.UseWebAssemblyDebugging();
             app.UseMigrationsEndPoint();
+
+            app.MapOpenApi();
         }
         else
         {
@@ -60,6 +70,8 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthorization();
+
         app.UseAntiforgery();
 
         app.MapStaticAssets();
@@ -69,6 +81,8 @@ public class Program
 
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
+        
+        app.MapControllers();
 
         app.Run();
     }
